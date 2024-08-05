@@ -49,7 +49,7 @@ export default function Home() {
 							});
 						}}
 					>
-						{(props) => <Button {...props}>Upload a Video</Button>}
+						{(props) => <Button {...props}>Upload Video</Button>}
 					</FileButton>
 
 					<Divider />

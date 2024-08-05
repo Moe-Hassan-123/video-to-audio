@@ -4,7 +4,7 @@ import { Mutex } from "async-mutex";
 
 const mutex = new Mutex();
 
-export default async (file: File, ffmpeg: FFmpeg, progressCallback?: (progress: number) => void): Promise<Uint8Array> => {
+export default async function getThumbnails(file: File, ffmpeg: FFmpeg, progressCallback?: (progress: number) => void): Promise<Uint8Array> {
 	await mutex.waitForUnlock();
 	const release = await mutex.acquire();
 	try {
@@ -45,4 +45,4 @@ export default async (file: File, ffmpeg: FFmpeg, progressCallback?: (progress: 
 	} finally {
 		release();
 	}
-};
+}
