@@ -29,7 +29,7 @@ export default async function getThumbnails(file: File, ffmpeg: FFmpeg, progress
 		await ffmpeg.writeFile(inputFileName, fileData);
 
 		console.log("Executing command to convert thumbnail");
-		await ffmpeg.exec(["-y", "-i", inputFileName, "-vf", "scale=320:320:force_original_aspect_ratio=decrease", "-frames:v", "1", "-update", "true", "-threads", "0", outputFileName]);
+		await ffmpeg.exec(["-y", "-i", inputFileName, "-vf", "scale=800:800:force_original_aspect_ratio=decrease", "-frames:v", "1", "-update", "true", "-threads", "0", outputFileName]);
 
 		console.log("Reading thumbnail");
 		const data = await ffmpeg.readFile(outputFileName);
