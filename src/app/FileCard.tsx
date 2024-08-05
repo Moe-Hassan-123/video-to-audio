@@ -26,7 +26,7 @@ export default ({ file, ffmpeg }: FileCardProps) => {
 	}, [ffmpeg.loaded]);
 
 	return (
-		<Card w="320px">
+		<Card w="100%" maw="320px">
 			<CardSection>{thumbnail !== null && <Image src={thumbnail} height={160} alt={`${file.name}'s thumbnail`} />}</CardSection>
 
 			<Group justify="space-between" mt="md" mb="xs">

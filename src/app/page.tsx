@@ -32,8 +32,8 @@ export default function Home() {
 
 	return (
 		<main className={styles.main}>
-			<Container w="100%" m="xl" component={Center}>
-				<Stack w="100%" maw="800px">
+			<Container m="xl" w="100%" component={Center}>
+				<Stack w="100%" maw="700px">
 					<span>UPLOAD FILE:</span>
 
 					<FileButton
@@ -53,7 +53,14 @@ export default function Home() {
 					</FileButton>
 
 					<Divider />
-					<SimpleGrid cols={3}>
+
+					<SimpleGrid
+						cols={{
+							md: 2,
+							xs: 1,
+						}}
+						spacing="xl"
+					>
 						{ffmpegRef.current.loaded &&
 							files?.map((file) => {
 								return <FileCard key={file.lastModified} file={file} ffmpeg={ffmpegRef.current} />;
