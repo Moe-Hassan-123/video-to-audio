@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { Anchor, AppShell, AppShellFooter, AppShellMain, Center, ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "./globals.css";
 
@@ -18,11 +18,6 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<head>
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<ColorSchemeScript defaultColorScheme="light" />
-			</head>
-
 			<body className={inter.className}>
 				<MantineProvider
 					forceColorScheme="light"
@@ -30,7 +25,15 @@ export default function RootLayout({
 						primaryColor: "violet",
 					}}
 				>
-					{children}
+					<AppShell>
+						<AppShellMain>{children}</AppShellMain>
+						<AppShellFooter component={Center}>
+							Created by&nbsp;
+							<Anchor href="https://mohamed-hassan.dev" target="_blank">
+								Mohamed Hassan
+							</Anchor>
+						</AppShellFooter>
+					</AppShell>
 				</MantineProvider>
 			</body>
 		</html>

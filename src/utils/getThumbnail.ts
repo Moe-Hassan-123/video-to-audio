@@ -1,6 +1,7 @@
 import changeExtension from "@/utils/changeExtension";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { Mutex } from "async-mutex";
+import { toast } from "react-toastify";
 
 const mutex = new Mutex();
 
@@ -8,12 +9,12 @@ export default async function getThumbnails(file: File, ffmpeg: FFmpeg, progress
 	await mutex.waitForUnlock();
 	const release = await mutex.acquire();
 	try {
-		console.log("Starting to load thumbnail...");
+		console.debug("Starting to load thumbnail...");
 		ffmpeg.on("log", ({ message }) => {
-			console.log(message);
+			console.debug(message);
 		});
 		ffmpeg.on("progress", ({ progress }) => {
-			console.log(progress);
+			console.debug(progress);
 			progressCallback?.(progress);
 		});
 
@@ -24,23 +25,24 @@ export default async function getThumbnails(file: File, ffmpeg: FFmpeg, progress
 		const inputFileName = `thumbnail-input-${timestamp}-${file.name}`;
 		const outputFileName = changeExtension(`thumbnail-output-${timestamp}-${file.name}`, "jpg");
 
-		console.log("Writing file");
+		console.debug("Writing file");
 		const fileData = new Uint8Array(await file.arrayBuffer());
 		await ffmpeg.writeFile(inputFileName, fileData);
 
-		console.log("Executing command to convert thumbnail");
+		console.debug("Executing command to convert thumbnail");
 		await ffmpeg.exec(["-y", "-i", inputFileName, "-vf", "scale=800:800:force_original_aspect_ratio=decrease", "-frames:v", "1", "-update", "true", "-threads", "0", outputFileName]);
 
-		console.log("Reading thumbnail");
+		console.debug("Reading thumbnail");
 		const data = await ffmpeg.readFile(outputFileName);
 
-		console.log("Cleaning up");
+		console.debug("Cleaning up");
 		await ffmpeg.deleteFile(inputFileName);
 		await ffmpeg.deleteFile(outputFileName);
 
 		return data as Uint8Array;
 	} catch (error) {
 		console.error("Error generating thumbnail:", error);
+		toast.error("Error happened while generating a thumbnail.");
 		throw error;
 	} finally {
 		release();

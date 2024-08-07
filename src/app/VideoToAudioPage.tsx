@@ -1,22 +1,14 @@
 "use client";
-import styles from "./page.module.css";
-import { Button, Center, Container, Divider, FileButton, Stack } from "@mantine/core";
-import "@mantine/core/styles.css";
+import { Button, Card, Center, Container, Divider, FileButton, Group, Stack } from "@mantine/core";
 import { useRef, useState } from "react";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { toBlobURL } from "@ffmpeg/util";
 import FileCard from "./FileCard";
+import { IconUpload } from "@tabler/icons-react";
+import { Dropzone } from "@mantine/dropzone";
 
-export type UploadedFile = {
-	file: File;
-	audioOutput?: Uint8Array;
-	isProcessing: boolean;
-	progress: number;
-	isDone: boolean;
-};
-
-export default function ConvertPage() {
-	const [file, setFile] = useState<UploadedFile | null>(null);
+export default function VideoToAudioComponent() {
+	const [file, setFile] = useState<File | null>(null);
 	const ffmpegRef = useRef(new FFmpeg());
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -38,35 +30,33 @@ export default function ConvertPage() {
 	if (!isLoading && !ffmpegRef.current.loaded) load();
 
 	return (
-		<main className={styles.main}>
+		<Card shadow="xl" m={"xl"}>
 			<Container m="xl" w="100%" component={Center}>
 				<Stack w="100%" maw="700px">
-					<span>UPLOAD FILE:</span>
-
-					<FileButton
-						accept="video/*"
-						onChange={(file) => {
-							if (file)
-								setFile({
-									file: file,
-									audioOutput: undefined,
-									isProcessing: false,
-									isDone: false,
-									progress: 0,
-								});
+					<Dropzone
+						multiple={false}
+						onDrop={(file) => {
+							setFile(file[0]);
 						}}
+						accept={["video/*"]}
 					>
-						{(props) => <Button {...props}>Upload Video</Button>}
-					</FileButton>
+						<Button component={Center}>
+							<Group>
+								<IconUpload />
+								Upload Video
+							</Group>
+						</Button>
+					</Dropzone>
 
 					{file && (
 						<>
 							<Divider />
-							<FileCard key={file.file.lastModified} file={file} ffmpeg={ffmpegRef.current} />
+
+							<FileCard key={file.lastModified} file={file} ffmpeg={ffmpegRef.current} />
 						</>
 					)}
 				</Stack>
 			</Container>
-		</main>
+		</Card>
 	);
 }
